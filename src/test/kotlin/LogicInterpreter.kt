@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 
 
 class LogicInterpreter() {
-    private val variables: MutableMap<String, Boolean> = mutableMapOf()
+    private val variables: MutableMap<String, String> = mutableMapOf()
 
     fun evaluate(expression: String): Boolean {
         // Remove all whitespace from the expression
@@ -16,42 +16,38 @@ class LogicInterpreter() {
             addLogic(match.groups[1]!!.value).toString()
         }
 
-        println(result)
-
-        // Check if result is a variable
-        if (result.matches("[^T|F|\\d]".toRegex())) {
-            // check if the variable is already defined
-            if (variables.containsKey(result)) {
-                return variables[result]!!
-            }
-            throw IllegalArgumentException("Unrecognized variable: $result")
-        }
-
         // Return the final result
         return addLogic(result).toBoolean()
     }
 
-    private fun addLogic(exp:String):Char{
-        // Next, evaluate NOT operators
-        var result = exp.replace("¬[TF]".toRegex()) { match ->
-            (!match.value[1].toBoolean()).toString()
+    private fun addLogic(exp: String): Char {
+        var expression = exp
+        // 1. Check if result is a variable
+        if (variables.isNotEmpty()) {
+            variables.keys.forEach {
+                expression = exp.replace(it.first(), variables[it]?.first()!!)
+            }
         }
 
-        // Then, evaluate AND operators
+        // 2. evaluate NOT operators
+        var result = expression.replace("¬[TF]".toRegex()) { match ->
+            if (!match.value[1].toBoolean()) "T" else "F"
+        }
+
+        // 3. evaluate AND operators
         result = result.replace("[TF]∧[TF]".toRegex()) { match ->
-            (match.value[0].toBoolean() && match.value[2].toBoolean()).toString()
+            if (match.value[0].toBoolean() && match.value[2].toBoolean()) "T" else "F"
         }
 
-        // Finally, evaluate OR operators
+        // 4. evaluate OR operators
         result = result.replace("[TF]∨[TF]".toRegex()) { match ->
-            (match.value[0].toBoolean() || match.value[2].toBoolean()).toString()
+            if (match.value[0].toBoolean() || match.value[2].toBoolean()) "T" else "F"
         }
-
-        return if(result.toBoolean()) 'T' else 'F'
+        return result.first()
     }
 
     fun setVariable(name: String, value: Boolean) {
-        variables[name] = value
+        variables[name] = if (value) "T" else "F"
     }
 }
 
@@ -90,6 +86,7 @@ private class Test {
     fun `T ∧ F to false`() {
         assertFalse(interpreter.evaluate("T ∧ F"))
     }
+
     @Test
     fun `(T ∧ F) to false`() {
         assertFalse(interpreter.evaluate("(T ∧ F)"))
@@ -98,5 +95,11 @@ private class Test {
     @Test
     fun `(T ∧ F) ∨ T evaluates to true`() {
         assertTrue(interpreter.evaluate("(T ∧ F) ∨ T"))
+    }
+
+    @Test
+    fun `X ∧ ¬X evaluates to false`() {
+        interpreter.setVariable("X", false)
+        assertFalse(interpreter.evaluate("X ∧ ¬X"))
     }
 }
