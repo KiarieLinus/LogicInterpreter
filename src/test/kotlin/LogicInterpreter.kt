@@ -55,7 +55,7 @@ private fun Char.toBoolean(): Boolean {
     return when (this) {
         'T' -> true
         'F' -> false
-        else -> false
+        else -> throw IllegalArgumentException("Invalid argument $this")
     }
 }
 
