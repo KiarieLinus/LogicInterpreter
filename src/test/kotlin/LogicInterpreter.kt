@@ -47,8 +47,8 @@ class LogicInterpreter() {
 
     fun setVariable(name: String, value: Boolean) {
         val invalidRegex = Regex("[TF0-9]")
-        if(invalidRegex.containsMatchIn(name)){
-            throw IllegalArgumentException("Invalid argument $name")
+        if (invalidRegex.containsMatchIn(name)) {
+            throw IllegalArgumentException("Invalid argument $name cannot be declared as a variable")
         }
         variables[name] = if (value) "T" else "F"
     }
@@ -58,7 +58,9 @@ private fun Char.toBoolean(): Boolean {
     return when (this) {
         'T' -> true
         'F' -> false
-        else -> throw IllegalArgumentException("Invalid argument $this")
+        else -> throw IllegalArgumentException(
+            "Invalid argument $this use fun interpreter.setVariable(String,Boolean) to add a variable"
+        )
     }
 }
 
@@ -107,25 +109,32 @@ private class Test {
     }
 
     @Test
+    fun `X ∧ ¬X throws exception when setVariable is unused`() {
+        val exception = assertThrows(IllegalArgumentException::class.java) {
+            interpreter.evaluate("X ∧ ¬X")
+        }
+        assertEquals(
+            "Invalid argument X use fun interpreter.setVariable(String,Boolean) to add a variable", exception.message)
+    }
+
+    @Test
     fun `setVariable F,T or 0-9 throws exception`() {
         //Test for number
-        var exception = assertThrows(IllegalArgumentException::class.java){
+        var exception = assertThrows(IllegalArgumentException::class.java) {
             interpreter.setVariable("6", false)
         }
-        assertEquals("Invalid argument 6",exception.message)
+        assertEquals("Invalid argument 6 cannot be declared as a variable", exception.message)
 
         //Test for "F"
-        exception = assertThrows(IllegalArgumentException::class.java){
+        exception = assertThrows(IllegalArgumentException::class.java) {
             interpreter.setVariable("F", false)
         }
-        assertEquals("Invalid argument F",exception.message)
+        assertEquals("Invalid argument F cannot be declared as a variable", exception.message)
 
         //Test for "T"
-        exception = assertThrows(IllegalArgumentException::class.java){
+        exception = assertThrows(IllegalArgumentException::class.java) {
             interpreter.setVariable("T", false)
         }
-        assertEquals("Invalid argument T",exception.message)
-
-
+        assertEquals("Invalid argument T cannot be declared as a variable", exception.message)
     }
 }
