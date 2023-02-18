@@ -1,7 +1,8 @@
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import kotlin.test.assertFailsWith
 
 
 class LogicInterpreter() {
@@ -47,6 +48,10 @@ class LogicInterpreter() {
     }
 
     fun setVariable(name: String, value: Boolean) {
+        val invalidRegex = Regex("[TF0-9]")
+        if(invalidRegex.containsMatchIn(name)){
+            throw IllegalArgumentException("Invalid argument $name")
+        }
         variables[name] = if (value) "T" else "F"
     }
 }
@@ -101,5 +106,24 @@ private class Test {
     fun `X ∧ ¬X evaluates to false`() {
         interpreter.setVariable("X", false)
         assertFalse(interpreter.evaluate("X ∧ ¬X"))
+    }
+
+    @Test
+    fun `setVariable F,T or 0-9 throws exception`() {
+        assertFailsWith(
+            exceptionClass = IllegalArgumentException::class,
+            message = "Invalid argument F"){
+            interpreter.setVariable("F", false)
+        }
+        assertFailsWith(
+            exceptionClass = IllegalArgumentException::class,
+            message = "Invalid argument T"){
+            interpreter.setVariable("T", false)
+        }
+        assertFailsWith(
+            exceptionClass = IllegalArgumentException::class,
+            message = "Invalid argument 6"){
+            interpreter.setVariable("6", false)
+        }
     }
 }

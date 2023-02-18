@@ -18,7 +18,7 @@ Variables can be defined using the setVariable function
 
 Example: interpreter.setVariable("X", false)
 
-Where "interpreter" is a LogicInterpreter object
+Where "interpreter" is a LogicInterpreter object. The values F and T as well as values starting with a number throw an exception when used to assign the variables.
 
 ## NOT operator
 The NOT operator (¬) negates the value of the expression following it.
