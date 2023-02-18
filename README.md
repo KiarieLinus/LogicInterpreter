@@ -43,8 +43,8 @@ Example: (T ∧ F) ∨ T evaluates to T
 ## Precedence
 
 | Operator | Order |
-|----------|-------|
-| ¬        | 1     |
-| ∧        | 2     |
-| ∨        | 3     |
+|:--------:|:-----:|
+|    ¬     |   1   |
+|    ∧     |   2   |
+|    ∨     |   3   |
 
