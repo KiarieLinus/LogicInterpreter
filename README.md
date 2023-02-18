@@ -49,3 +49,5 @@ Example: (T ∧ F) ∨ T evaluates to T
 |    ∧     |   3   |
 |    ∨     |   4   |
 
+## License
+This project is licensed under the MIT [License](https://github.com/KiarieLinus/LogicInterpreter/blob/master/LICENSE.md).
