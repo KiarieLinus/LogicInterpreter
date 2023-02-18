@@ -1,8 +1,6 @@
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import kotlin.test.assertFailsWith
 
 
 class LogicInterpreter() {
@@ -110,20 +108,24 @@ private class Test {
 
     @Test
     fun `setVariable F,T or 0-9 throws exception`() {
-        assertFailsWith(
-            exceptionClass = IllegalArgumentException::class,
-            message = "Invalid argument F"){
-            interpreter.setVariable("F", false)
-        }
-        assertFailsWith(
-            exceptionClass = IllegalArgumentException::class,
-            message = "Invalid argument T"){
-            interpreter.setVariable("T", false)
-        }
-        assertFailsWith(
-            exceptionClass = IllegalArgumentException::class,
-            message = "Invalid argument 6"){
+        //Test for number
+        var exception = assertThrows(IllegalArgumentException::class.java){
             interpreter.setVariable("6", false)
         }
+        assertEquals("Invalid argument 6",exception.message)
+
+        //Test for "F"
+        exception = assertThrows(IllegalArgumentException::class.java){
+            interpreter.setVariable("F", false)
+        }
+        assertEquals("Invalid argument F",exception.message)
+
+        //Test for "T"
+        exception = assertThrows(IllegalArgumentException::class.java){
+            interpreter.setVariable("T", false)
+        }
+        assertEquals("Invalid argument T",exception.message)
+
+
     }
 }
