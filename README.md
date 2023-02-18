@@ -6,6 +6,8 @@ To install the project, simply clone this repository to your local machine:
 
 git clone https://github.com/KiarieLinus/LogicInterpreter.git
 
+Run it on and IDE that supports Kotlin
+
 ## Usage
 To use the Boolean logic interpreter, run the test file [LogicInterpreter.kt](https://github.com/KiarieLinus/LogicInterpreter/blob/master/src/test/kotlin/LogicInterpreter.kt) that already has some pre-written tests.
 
